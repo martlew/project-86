@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -703,3 +704,1092 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>86</title>
+    <meta name="description" content="86. Why?">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: "Space Mono", monospace;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* =========================
+           MAIN LAYOUT
+        ========================= */
+
+        .page {
+            width: 100%;
+            height: 100vh;
+            min-height: 600px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 38px 24px 30px;
+            position: relative;
+
+            will-change: transform;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            text-align: center;
+            z-index: 2;
+        }
+
+        .code {
+            color: #444;
+            font-size: 11px;
+            letter-spacing: 5px;
+            margin-bottom: 7px;
+            transition: color 0.4s ease;
+        }
+
+        .logo {
+            font-size: clamp(58px, 10vw, 92px);
+            line-height: 1;
+            font-weight: 700;
+            letter-spacing: -7px;
+            position: relative;
+        }
+
+        /* Chromatic-shift ghost layers for the logo, only shown during the effect */
+        .logo-ghost {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .logo-ghost.cyan { color: #00e5ff; }
+        .logo-ghost.red  { color: #ff2b2b; }
+
+        .logo-ghost.active.cyan {
+            animation: chromaCyan 0.35s ease-out;
+        }
+
+        .logo-ghost.active.red {
+            animation: chromaRed 0.35s ease-out;
+        }
+
+        @keyframes chromaCyan {
+            0%   { opacity: 0.85; transform: translate(-4px, 1px); }
+            100% { opacity: 0;    transform: translate(0, 0); }
+        }
+
+        @keyframes chromaRed {
+            0%   { opacity: 0.85; transform: translate(4px, -1px); }
+            100% { opacity: 0;    transform: translate(0, 0); }
+        }
+
+        /* =========================
+           CENTER
+        ========================= */
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: -20px;
+            z-index: 2;
+        }
+
+        /* =========================
+           COUNTER
+        ========================= */
+
+        .counter {
+            font-size: 13px;
+            color: #777;
+            letter-spacing: 3px;
+            margin-bottom: 32px;
+        }
+
+        .counter span {
+            color: #ddd;
+        }
+
+        /* =========================
+           BUTTON
+        ========================= */
+
+        .button-wrap {
+            position: relative;
+            width: 230px;
+            height: 230px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .press-button {
+            width: 190px;
+            height: 190px;
+
+            border-radius: 50%;
+            border: 2px solid #ff3333;
+
+            background:
+                radial-gradient(
+                    circle at 35% 30%,
+                    #ff5a5a 0%,
+                    #f00000 35%,
+                    #bd0000 70%,
+                    #800000 100%
+                );
+
+            color: white;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            box-shadow:
+                0 0 30px rgba(255, 0, 0, 0.28),
+                0 0 90px rgba(255, 0, 0, 0.12),
+                inset 0 3px 12px rgba(255,255,255,0.25),
+                inset 0 -10px 20px rgba(0,0,0,0.3);
+
+            transition:
+                transform 0.08s ease,
+                box-shadow 0.15s ease,
+                background 0.4s ease,
+                border-color 0.4s ease;
+        }
+
+        .press-button:hover {
+            box-shadow:
+                0 0 40px rgba(255, 0, 0, 0.45),
+                0 0 110px rgba(255, 0, 0, 0.16),
+                inset 0 3px 12px rgba(255,255,255,0.25),
+                inset 0 -10px 20px rgba(0,0,0,0.3);
+        }
+
+        .press-button:active {
+            transform: scale(0.91);
+        }
+
+        /* Frame 0-80ms: button collapses to black before the break */
+        .press-button.collapsing {
+            background: #000;
+            border-color: #000;
+            transform: scale(0.86);
+            box-shadow: 0 0 0 rgba(255,0,0,0);
+            transition:
+                transform 0.08s ease-in,
+                background 0.08s ease-in,
+                border-color 0.08s ease-in,
+                box-shadow 0.08s ease-in;
+        }
+
+        /* Locked state: one press used for today */
+        .press-button.locked {
+            background:
+                radial-gradient(circle at 35% 30%, #3a3a3a 0%, #222 40%, #111 100%);
+            border-color: #333;
+            box-shadow:
+                inset 0 3px 12px rgba(255,255,255,0.08),
+                inset 0 -10px 20px rgba(0,0,0,0.4);
+            cursor: default;
+        }
+
+        .press-button.locked:hover {
+            box-shadow:
+                inset 0 3px 12px rgba(255,255,255,0.08),
+                inset 0 -10px 20px rgba(0,0,0,0.4);
+        }
+
+        .press-button.locked:active {
+            transform: none;
+        }
+
+        .press-label {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 5px;
+            margin-left: 5px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .press-button.locked .press-label {
+            color: #555;
+            font-size: 11px;
+            letter-spacing: 3px;
+        }
+
+        /* =========================
+           MYSTERY MESSAGE
+        ========================= */
+
+        .message {
+            min-height: 25px;
+            margin-top: 28px;
+
+            color: #ff3030;
+            font-size: 10px;
+            letter-spacing: 3px;
+
+            text-align: center;
+
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .message.visible {
+            opacity: 1;
+        }
+
+        .message.dim {
+            color: #666;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            width: 100%;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .world {
+            font-size: 11px;
+            color: #555;
+            letter-spacing: 3px;
+            margin-bottom: 18px;
+        }
+
+        .world strong {
+            color: #aaa;
+            font-weight: 400;
+        }
+
+        .why {
+            display: inline-block;
+
+            color: #333;
+            font-size: 10px;
+            letter-spacing: 3px;
+
+            text-decoration: none;
+
+            border-bottom: 1px dotted #333;
+            padding-bottom: 3px;
+
+            transition:
+                color 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+        .why:hover {
+            color: #aaa;
+            border-color: #aaa;
+        }
+
+        /* =========================
+           FX CANVAS (Reality Break)
+        ========================= */
+
+        #fx-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+
+            z-index: 15;
+            pointer-events: none;
+
+            opacity: 0;
+        }
+
+        #fx-canvas.active {
+            opacity: 1;
+        }
+
+        /* Full-screen distortion flash used during BURST phase */
+        .fx-flash {
+            position: fixed;
+            inset: 0;
+
+            opacity: 0;
+            pointer-events: none;
+            z-index: 14;
+
+            mix-blend-mode: screen;
+        }
+
+        .fx-flash.active {
+            animation: fxFlash 0.28s ease-out;
+        }
+
+        @keyframes fxFlash {
+            0%   { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* =========================
+           MILESTONE SCREEN
+        ========================= */
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+
+            background: rgba(0,0,0,0.97);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            z-index: 20;
+
+            opacity: 0;
+            visibility: hidden;
+
+            transition:
+                opacity 0.5s ease,
+                visibility 0.5s ease;
+        }
+
+        .overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .overlay-content {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .overlay-number {
+            color: #444;
+            font-size: 11px;
+            letter-spacing: 5px;
+            margin-bottom: 25px;
+        }
+
+        .overlay-title {
+            font-size: clamp(25px, 5vw, 48px);
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .overlay-subtitle {
+            margin-top: 20px;
+            color: #666;
+            font-size: 11px;
+            letter-spacing: 3px;
+        }
+
+        .close {
+            margin-top: 45px;
+
+            background: transparent;
+            border: none;
+
+            color: #444;
+
+            font-family: inherit;
+            font-size: 10px;
+            letter-spacing: 3px;
+
+            cursor: pointer;
+
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: white;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .page {
+                padding-top: 28px;
+                padding-bottom: 24px;
+            }
+
+            .button-wrap {
+                width: 210px;
+                height: 210px;
+            }
+
+            .press-button {
+                width: 175px;
+                height: 175px;
+            }
+
+            main {
+                margin-top: -10px;
+            }
+
+            .counter {
+                margin-bottom: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<canvas id="fx-canvas"></canvas>
+<div id="fx-flash" class="fx-flash"></div>
+
+<div class="page" id="page">
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header>
+        <div id="code" class="code">86 &lt; 86</div>
+        <div class="logo">
+            86
+            <span id="ghostCyan" class="logo-ghost cyan">86</span>
+            <span id="ghostRed" class="logo-ghost red">86</span>
+        </div>
+    </header>
+
+
+    <!-- =========================
+         CENTER
+    ========================== -->
+
+    <main>
+
+        <div class="counter">
+            <span id="total">12,482,931</span> PRESSES
+        </div>
+
+        <div class="button-wrap">
+
+            <button
+                id="pressButton"
+                class="press-button"
+                aria-label="Press the button"
+            >
+                <span id="pressLabel" class="press-label">PRESS</span>
+            </button>
+
+        </div>
+
+        <div id="message" class="message"></div>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <div class="world">
+            <strong id="today">12,482,931</strong> PRESSES TODAY
+        </div>
+
+        <a href="#" id="why" class="why">
+            WHY 86?
+        </a>
+
+    </footer>
+
+</div>
+
+
+<!-- =========================
+     WHY 86 OVERLAY
+========================== -->
+
+<div id="overlay" class="overlay">
+
+    <div class="overlay-content">
+
+        <div class="overlay-number">
+            86
+        </div>
+
+        <div class="overlay-title" id="overlayTitle">
+            WHY?
+        </div>
+
+        <div class="overlay-subtitle" id="overlaySubtitle">
+            THERE IS NO ANSWER.
+        </div>
+
+        <button id="close" class="close">
+            CLOSE
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* ==========================================
+       INITIAL STATE
+    ========================================== */
+
+    // Temporary demo value.
+    // Later this will come from the global database (DigitalOcean backend).
+    let worldClicks = 12482931;
+
+    const STORAGE_KEY = "86_press_state";
+
+    /* ==========================================
+       ELEMENTS
+    ========================================== */
+
+    const button = document.getElementById("pressButton");
+    const pressLabel = document.getElementById("pressLabel");
+
+    const total = document.getElementById("total");
+    const today = document.getElementById("today");
+
+    const message = document.getElementById("message");
+
+    const code = document.getElementById("code");
+
+    const ghostCyan = document.getElementById("ghostCyan");
+    const ghostRed = document.getElementById("ghostRed");
+
+    const fxCanvas = document.getElementById("fx-canvas");
+    const fxCtx = fxCanvas.getContext("2d");
+    const fxFlash = document.getElementById("fx-flash");
+
+    const page = document.getElementById("page");
+
+    const why = document.getElementById("why");
+    const overlay = document.getElementById("overlay");
+    const overlayTitle = document.getElementById("overlayTitle");
+    const overlaySubtitle = document.getElementById("overlaySubtitle");
+    const closeBtn = document.getElementById("close");
+
+
+    /* ==========================================
+       FORMAT NUMBER
+    ========================================== */
+
+    function formatNumber(number) {
+        return number.toLocaleString("en-US");
+    }
+
+    function todayKey() {
+        // Local calendar day. The real per-day boundary will later be
+        // enforced server-side (UTC) once the DigitalOcean backend exists.
+        const d = new Date();
+        return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+    }
+
+
+    /* ==========================================
+       SHOW MESSAGE
+    ========================================== */
+
+    function showMessage(text, dim) {
+
+        message.textContent = text;
+
+        message.classList.remove("visible");
+        message.classList.toggle("dim", !!dim);
+
+        // Force animation restart
+        void message.offsetWidth;
+
+        message.classList.add("visible");
+
+    }
+
+
+    /* ==========================================
+       PRESS STATE (One Press per Day)
+       Frontend-only prototype. The server will
+       later re-check this with an anonymous
+       session token instead of trusting the client.
+    ========================================== */
+
+    function loadPressState() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : { lastDay: null, totalDays: 0 };
+        } catch (e) {
+            return { lastDay: null, totalDays: 0 };
+        }
+    }
+
+    function savePressState(state) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+            /* localStorage unavailable — fail silently, prototype only */
+        }
+    }
+
+    let pressState = loadPressState();
+
+    function lockButtonForToday() {
+        button.classList.add("locked");
+        pressLabel.textContent = "YOU PRESSED.\nCOME BACK TOMORROW.";
+        button.setAttribute("aria-disabled", "true");
+    }
+
+    function applyStoredStateOnLoad() {
+        if (pressState.lastDay === todayKey()) {
+            lockButtonForToday();
+            showMessage("YOU USED TODAY'S PRESS.", true);
+        }
+    }
+
+    applyStoredStateOnLoad();
+
+
+    /* ==========================================
+       86-SHAPE TARGET POINTS
+       Sampled once from an offscreen canvas so the
+       particle burst has something to converge into.
+    ========================================== */
+
+    let shapePoints = [];
+
+    function buildShapePoints() {
+
+        const off = document.createElement("canvas");
+        const size = 300;
+        off.width = size;
+        off.height = size;
+        const octx = off.getContext("2d");
+
+        octx.fillStyle = "#fff";
+        octx.font = "bold 180px 'Space Mono', monospace";
+        octx.textAlign = "center";
+        octx.textBaseline = "middle";
+        octx.fillText("86", size / 2, size / 2 + 10);
+
+        const data = octx.getImageData(0, 0, size, size).data;
+        const points = [];
+
+        for (let y = 0; y < size; y += 4) {
+            for (let x = 0; x < size; x += 4) {
+                const alpha = data[(y * size + x) * 4 + 3];
+                if (alpha > 128) {
+                    points.push({
+                        x: (x - size / 2) / size,
+                        y: (y - size / 2) / size
+                    });
+                }
+            }
+        }
+
+        shapePoints = points;
+    }
+
+    buildShapePoints();
+
+
+    /* ==========================================
+       CANVAS SIZE
+    ========================================== */
+
+    function resizeCanvas() {
+        fxCanvas.width = window.innerWidth;
+        fxCanvas.height = window.innerHeight;
+    }
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+
+    /* ==========================================
+       CAMERA SHAKE
+    ========================================== */
+
+    function cameraShake(intensity, duration) {
+
+        const start = performance.now();
+
+        function tick(now) {
+            const t = (now - start) / duration;
+
+            if (t >= 1) {
+                page.style.transform = "translate(0, 0)";
+                return;
+            }
+
+            const decay = 1 - t;
+            const dx = (Math.random() * 2 - 1) * intensity * decay;
+            const dy = (Math.random() * 2 - 1) * intensity * decay;
+
+            page.style.transform = `translate(${dx}px, ${dy}px)`;
+
+            requestAnimationFrame(tick);
+        }
+
+        requestAnimationFrame(tick);
+    }
+
+
+    /* ==========================================
+       CHROMATIC SHIFT
+    ========================================== */
+
+    function chromaticShift() {
+        ghostCyan.classList.remove("active");
+        ghostRed.classList.remove("active");
+
+        void ghostCyan.offsetWidth;
+
+        ghostCyan.classList.add("active");
+        ghostRed.classList.add("active");
+    }
+
+
+    /* ==========================================
+       FULL-SCREEN FLASH
+    ========================================== */
+
+    function screenFlash(color) {
+        fxFlash.style.background = color;
+        fxFlash.classList.remove("active");
+        void fxFlash.offsetWidth;
+        fxFlash.classList.add("active");
+    }
+
+
+    /* ==========================================
+       REALITY BREAK — PARTICLE ENGINE
+       Three variants, picked at random per press.
+       Phases: BURST -> CONVERGE -> HOLD -> FADE
+    ========================================== */
+
+    const EFFECTS = {
+
+        IMPACT: {
+            color: () => Math.random() > 0.4 ? "255,60,40" : "255,255,255",
+            burstSpeed: 9,
+            gravity: 0,
+            shake: 14,
+            flash: "rgba(255,40,20,0.35)"
+        },
+
+        VOID: {
+            color: () => Math.random() > 0.5 ? "30,30,30" : "255,255,255",
+            burstSpeed: 4,
+            gravity: 0,
+            shake: 4,
+            flash: "rgba(0,0,0,0.55)"
+        },
+
+        GRAVITY: {
+            color: () => Math.random() > 0.5 ? "255,80,60" : "255,200,180",
+            burstSpeed: 7,
+            gravity: 0.15,
+            shake: 9,
+            flash: "rgba(255,60,40,0.25)"
+        }
+
+    };
+
+    const EFFECT_NAMES = Object.keys(EFFECTS);
+
+    function runRealityBreak(onDone) {
+
+        const rect = button.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+
+        const effectName = EFFECT_NAMES[Math.floor(Math.random() * EFFECT_NAMES.length)];
+        const cfg = EFFECTS[effectName];
+
+        cameraShake(cfg.shake, 350);
+        screenFlash(cfg.flash);
+        chromaticShift();
+
+        // Scale the sampled 86-shape to a good on-screen size
+        const shapeScale = Math.min(window.innerWidth, window.innerHeight) * 0.7;
+
+        const count = shapePoints.length + 60;
+        const particles = [];
+
+        for (let i = 0; i < count; i++) {
+
+            const angle = Math.random() * Math.PI * 2;
+            const speed = (0.5 + Math.random()) * cfg.burstSpeed;
+
+            const target = shapePoints[i % shapePoints.length];
+
+            particles.push({
+                x: cx,
+                y: cy,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                targetX: cx + target.x * shapeScale,
+                targetY: cy + target.y * shapeScale,
+                color: cfg.color(),
+                size: 1.5 + Math.random() * 2
+            });
+        }
+
+        fxCanvas.classList.add("active");
+
+        const BURST_END = 250;
+        const CONVERGE_END = 700;
+        const HOLD_END = 850;
+        const FADE_END = 1200;
+
+        const start = performance.now();
+
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+
+        function frame(now) {
+
+            const elapsed = now - start;
+
+            fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+
+            let alpha = 1;
+            if (elapsed > HOLD_END) {
+                alpha = 1 - (elapsed - HOLD_END) / (FADE_END - HOLD_END);
+            }
+            alpha = Math.max(0, Math.min(1, alpha));
+
+            if (elapsed <= BURST_END) {
+
+                const t = elapsed / BURST_END;
+                for (const p of particles) {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += cfg.gravity;
+                    drawParticle(p, alpha);
+                }
+
+            } else if (elapsed <= CONVERGE_END) {
+
+                const t = easeOutCubic((elapsed - BURST_END) / (CONVERGE_END - BURST_END));
+                for (const p of particles) {
+                    const cxp = p.x + (p.targetX - p.x) * 0.12;
+                    const cyp = p.y + (p.targetY - p.y) * 0.12;
+                    p.x = cxp;
+                    p.y = cyp;
+                    drawParticle(p, alpha);
+                }
+
+            } else if (elapsed <= HOLD_END) {
+
+                for (const p of particles) {
+                    drawParticle(p, alpha);
+                }
+
+            } else if (elapsed <= FADE_END) {
+
+                for (const p of particles) {
+                    p.y += cfg.gravity > 0 ? 1.5 : 0;
+                    drawParticle(p, alpha);
+                }
+
+            } else {
+
+                fxCanvas.classList.remove("active");
+                fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+                onDone();
+                return;
+            }
+
+            requestAnimationFrame(frame);
+        }
+
+        requestAnimationFrame(frame);
+    }
+
+    function drawParticle(p, alpha) {
+        fxCtx.beginPath();
+        fxCtx.fillStyle = `rgba(${p.color},${alpha})`;
+        fxCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        fxCtx.fill();
+    }
+
+
+    /* ==========================================
+       PRESS-DAY MILESTONES
+       Based on total days pressed (localStorage),
+       not on clicks-per-session, since one press
+       per day is the whole point now.
+    ========================================== */
+
+    function handleMilestone(totalDays) {
+
+        if (totalDays === 1) {
+            showMessage("WELCOME TO 86.");
+        } else if (totalDays === 10) {
+            showMessage("TEN DAYS. STILL NO ANSWER.");
+        } else if (totalDays === 25) {
+            showMessage("YOU KEEP COMING BACK.");
+        } else if (totalDays === 50) {
+            showMessage("50 WAS NOT THE TARGET.");
+        } else if (totalDays === 86) {
+
+            showMessage("YOU FOUND IT.");
+            code.textContent = "86 = 86";
+
+            setTimeout(() => {
+                overlayTitle.textContent = "86 DAYS.";
+                overlaySubtitle.textContent = "YOU FOUND IT.";
+                overlay.classList.add("open");
+            }, 900);
+
+        } else if (totalDays > 86 && totalDays % 50 === 0) {
+            showMessage("THE NUMBER CONTINUES.");
+        } else {
+            showMessage("YOU USED TODAY'S PRESS.", true);
+        }
+    }
+
+
+    /* ==========================================
+       BUTTON PRESS
+    ========================================== */
+
+    button.addEventListener("click", () => {
+
+        if (button.classList.contains("locked")) {
+            return;
+        }
+
+        // 0–80ms: button collapses to black
+        button.classList.add("collapsing");
+
+        setTimeout(() => {
+
+            button.classList.remove("collapsing");
+
+            worldClicks++;
+            total.textContent = formatNumber(worldClicks);
+            today.textContent = formatNumber(worldClicks);
+
+            runRealityBreak(() => {
+
+                pressState.totalDays = (pressState.totalDays || 0) + 1;
+                pressState.lastDay = todayKey();
+                savePressState(pressState);
+
+                lockButtonForToday();
+                handleMilestone(pressState.totalDays);
+
+            });
+
+        }, 80);
+
+    });
+
+
+    /* ==========================================
+       DEMO GLOBAL ACTIVITY
+
+       ONLY FOR THE PROTOTYPE.
+       Replace with API/database later (DigitalOcean).
+    ========================================== */
+
+    setInterval(() => {
+
+        const randomActivity = Math.floor(Math.random() * 3) + 1;
+
+        worldClicks += randomActivity;
+
+        total.textContent = formatNumber(worldClicks);
+        today.textContent = formatNumber(worldClicks);
+
+    }, 3500);
+
+
+    /* ==========================================
+       WHY 86
+    ========================================== */
+
+    why.addEventListener("click", (event) => {
+
+        event.preventDefault();
+
+        overlayTitle.textContent = "WHY?";
+        overlaySubtitle.textContent = "THERE IS NO ANSWER.";
+        overlay.classList.add("open");
+
+    });
+
+
+    /* ==========================================
+       CLOSE OVERLAY
+    ========================================== */
+
+    closeBtn.addEventListener("click", () => {
+
+        overlay.classList.remove("open");
+
+    });
+
+
+    /* ==========================================
+       ESC KEY
+    ========================================== */
+
+    document.addEventListener("keydown", (event) => {
+
+        if (event.key === "Escape") {
+
+            overlay.classList.remove("open");
+
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
+>>>>>>> e210634 (Add Reality Break canvas engine and one-press per day prototype)
