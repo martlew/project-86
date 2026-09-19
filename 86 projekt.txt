@@ -1,0 +1,23 @@
+
+https://project-86-live.vercel.app/
+
+git add index.html
+git commit -m "Update index.html: Counter to zero, larger welcome text, and test mode enabled"
+git push origin main
+
+----------------------------
+git commit -am "Update index.html: Helle Texte und Lesbarkeit optimiert"
+git push origin main
+
+
+--------------------------------------------
+
+
+Einfacher Reset-Mechanismus:
+
+Per Doppelklick: Ein Doppelklick auf das „86“-Logo im Header setzt den Zähler wieder auf 0 und leert den localStorage.
+
+Per Konsole: Alternativ kann jederzeit reset86() aufgerufen werden.
+
+
+-------------------------------------------
