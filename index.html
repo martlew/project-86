@@ -273,25 +273,42 @@
         ========================= */
 
         .message {
-            min-height: 25px;
-            margin-top: 28px;
+            min-height: 38px;
+            margin-top: 34px;
 
-            color: #ff3030;
-            font-size: 10px;
-            letter-spacing: 3px;
+            color: #ff3333;
+            font-size: clamp(16px, 3.2vw, 24px);
+            font-weight: 700;
+            letter-spacing: 6px;
+            margin-right: -6px;
 
             text-align: center;
+            text-transform: uppercase;
+            text-shadow:
+                0 0 16px rgba(255, 51, 51, 0.45),
+                0 0 36px rgba(255, 51, 51, 0.2);
 
             opacity: 0;
-            transition: opacity 0.5s ease;
+            transform: translateY(8px);
+            transition:
+                opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                color 0.4s ease,
+                text-shadow 0.4s ease;
         }
 
         .message.visible {
             opacity: 1;
+            transform: translateY(0);
         }
 
         .message.dim {
-            color: #666;
+            color: #777;
+            font-size: clamp(11px, 2vw, 13px);
+            font-weight: 400;
+            letter-spacing: 4px;
+            margin-right: -4px;
+            text-shadow: none;
         }
 
         /* =========================
@@ -487,6 +504,13 @@
             .counter {
                 margin-bottom: 26px;
             }
+
+            .message {
+                margin-top: 24px;
+                font-size: 15px;
+                letter-spacing: 4px;
+                margin-right: -4px;
+            }
         }
     </style>
 </head>
@@ -504,7 +528,7 @@
 
         <header>
             <div id="code" class="code">86 &lt; 86</div>
-            <div class="logo">
+            <div class="logo" id="logo" title="Double-click to reset counter (Debug)">
                 86
                 <span id="ghostCyan" class="logo-ghost cyan">86</span>
                 <span id="ghostRed" class="logo-ghost red">86</span>
@@ -519,7 +543,7 @@
         <main>
 
             <div class="counter">
-                <span id="total">12,482,931</span> PRESSES
+                <span id="total">0</span> PRESSES
             </div>
 
             <div class="button-wrap">
@@ -542,7 +566,7 @@
         <footer>
 
             <div class="world">
-                <strong id="today">12,482,931</strong> PRESSES TODAY
+                <strong id="today">0</strong> PRESSES TODAY
             </div>
 
             <a href="#" id="why" class="why">
@@ -586,12 +610,14 @@
     <script>
 
         /* ==========================================
-           INITIAL STATE
+           INITIAL STATE & CONFIG
         ========================================== */
 
-        // Temporary demo value.
-        // Later this will come from the global database (DigitalOcean backend).
-        let worldClicks = 12482931;
+        // Set to true to bypass 24-hour limit for unlimited testing
+        const TEST_MODE = true;
+
+        // Counter starts at 0 until real backend is connected
+        let worldClicks = 0;
 
         const STORAGE_KEY = "86_press_state";
 
@@ -693,7 +719,7 @@
         }
 
         function applyStoredStateOnLoad() {
-            if (pressState.lastDay === todayKey()) {
+            if (!TEST_MODE && pressState.lastDay === todayKey()) {
                 lockButtonForToday();
                 showMessage("YOU USED TODAY'S PRESS.", true);
             }
@@ -971,22 +997,14 @@
 
         /* ==========================================
            PRESS-DAY MILESTONES
-           Based on total days pressed (localStorage),
-           not on clicks-per-session, since one press
-           per day is the whole point now.
+           In TEST_MODE, "WELCOME TO 86." is shown
+           prominently on every test press (unless
+           reaching a special milestone).
         ========================================== */
 
         function handleMilestone(totalDays) {
 
-            if (totalDays === 1) {
-                showMessage("WELCOME TO 86.");
-            } else if (totalDays === 10) {
-                showMessage("TEN DAYS. STILL NO ANSWER.");
-            } else if (totalDays === 25) {
-                showMessage("YOU KEEP COMING BACK.");
-            } else if (totalDays === 50) {
-                showMessage("50 WAS NOT THE TARGET.");
-            } else if (totalDays === 86) {
+            if (totalDays === 86) {
 
                 showMessage("YOU FOUND IT.");
                 code.textContent = "86 = 86";
@@ -997,8 +1015,16 @@
                     overlay.classList.add("open");
                 }, 900);
 
+            } else if (totalDays === 10) {
+                showMessage("TEN DAYS. STILL NO ANSWER.");
+            } else if (totalDays === 25) {
+                showMessage("YOU KEEP COMING BACK.");
+            } else if (totalDays === 50) {
+                showMessage("50 WAS NOT THE TARGET.");
             } else if (totalDays > 86 && totalDays % 50 === 0) {
                 showMessage("THE NUMBER CONTINUES.");
+            } else if (TEST_MODE || totalDays === 1) {
+                showMessage("WELCOME TO 86.");
             } else {
                 showMessage("YOU USED TODAY'S PRESS.", true);
             }
@@ -1009,11 +1035,19 @@
            BUTTON PRESS
         ========================================== */
 
+        let isPressing = false;
+
         button.addEventListener("click", () => {
 
-            if (button.classList.contains("locked")) {
+            if (!TEST_MODE && button.classList.contains("locked")) {
                 return;
             }
+
+            if (isPressing) {
+                return;
+            }
+
+            isPressing = true;
 
             // 0–80ms: button collapses to black
             button.classList.add("collapsing");
@@ -1032,8 +1066,17 @@
                     pressState.lastDay = todayKey();
                     savePressState(pressState);
 
-                    lockButtonForToday();
+                    if (!TEST_MODE) {
+                        lockButtonForToday();
+                    } else {
+                        // In TEST_MODE: remain unlocked for unlimited testing
+                        button.classList.remove("locked");
+                        pressLabel.textContent = "PRESS";
+                        button.removeAttribute("aria-disabled");
+                    }
+
                     handleMilestone(pressState.totalDays);
+                    isPressing = false;
 
                 });
 
@@ -1043,22 +1086,36 @@
 
 
         /* ==========================================
-           DEMO GLOBAL ACTIVITY
-    
-           ONLY FOR THE PROTOTYPE.
-           Replace with API/database later (DigitalOcean).
+           DEBUG / RESET MECHANISM
+           - Double click the 86 logo in header
+           - Or call window.reset86() in console
+           Resets counter to 0 and clears localStorage.
         ========================================== */
 
-        setInterval(() => {
+        function resetAllState() {
+            localStorage.removeItem(STORAGE_KEY);
+            pressState = { lastDay: null, totalDays: 0 };
+            worldClicks = 0;
+            total.textContent = "0";
+            today.textContent = "0";
+            button.classList.remove("locked", "collapsing");
+            pressLabel.textContent = "PRESS";
+            button.removeAttribute("aria-disabled");
+            isPressing = false;
+            code.textContent = "86 < 86";
+            showMessage("RESET TO 0", true);
+            setTimeout(() => {
+                message.classList.remove("visible");
+            }, 1500);
+            console.log("[Project 86] State reset to 0.");
+        }
 
-            const randomActivity = Math.floor(Math.random() * 3) + 1;
+        const logoEl = document.getElementById("logo");
+        if (logoEl) {
+            logoEl.addEventListener("dblclick", resetAllState);
+        }
 
-            worldClicks += randomActivity;
-
-            total.textContent = formatNumber(worldClicks);
-            today.textContent = formatNumber(worldClicks);
-
-        }, 3500);
+        window.reset86 = resetAllState;
 
 
         /* ==========================================
