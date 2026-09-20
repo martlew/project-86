@@ -1420,7 +1420,11 @@
                     throw new Error("Server returned " + res.status);
                 }
                 const data = await res.json();
-                worldPulseCount.textContent = formatNumber(data.total);
+                worldClicks = typeof data.total === "number" ? data.total : 0;
+                const formattedTotal = formatNumber(worldClicks);
+                worldPulseCount.textContent = formattedTotal;
+                total.textContent = formattedTotal;
+                today.textContent = formattedTotal;
             } catch (e) {
                 // Leave it at "0" — not worth disturbing the page for this.
             }
