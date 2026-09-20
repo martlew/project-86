@@ -322,7 +322,6 @@
         .ghost-sighting {
             position: fixed;
             top: 24px;
-            left: 24px;
             transform: translateY(-10px);
 
             color: #999999;
@@ -336,8 +335,8 @@
 
             opacity: 0;
             transition:
-                opacity 0.4s ease,
-                transform 0.4s ease;
+                opacity 0.6s ease,
+                transform 0.6s ease;
         }
 
         .ghost-sighting.visible {
@@ -1459,11 +1458,14 @@
                 const flag = flagEmoji(entry.code);
                 const name = countryName(entry.code);
                 ghostSighting.textContent = `${flag} ${name.toUpperCase()} JUST PRESSED`;
+                const onLeft = Math.random() < 0.5;
+                ghostSighting.style.left = onLeft ? "24px" : "";
+                ghostSighting.style.right = onLeft ? "" : "24px";
                 ghostSighting.classList.add("visible");
 
                 setTimeout(() => {
                     ghostSighting.classList.remove("visible");
-                }, 2500);
+                }, 3500);
 
             } catch (e) {
                 // Backend unreachable — just skip this sighting.
