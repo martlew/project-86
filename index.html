@@ -359,8 +359,52 @@
             border-color: #fff;
         }
 
-        #worldLink {
+        .world-pulse {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+
             margin-left: 16px;
+
+            background: transparent;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+
+            color: #aaaaaa;
+            font-size: 10px;
+            letter-spacing: 2px;
+
+            transition: color 0.3s ease;
+        }
+
+        .world-pulse:hover {
+            color: #fff;
+        }
+
+        .world-pulse-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+
+            background: #ff3333;
+
+            animation: worldPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes worldPulse {
+
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.4);
+                opacity: 0.4;
+            }
+
         }
 
         /* =========================
@@ -436,6 +480,35 @@
         .overlay.open {
             opacity: 1;
             visibility: visible;
+        }
+
+        /* THE WORLD overlay only — floating card, not a fullscreen dimmer.
+           Scoped to #worldOverlay so the WHY 86? overlay (.overlay) is untouched. */
+        #worldOverlay {
+            top: auto;
+            left: auto;
+            right: 24px;
+            bottom: 24px;
+
+            max-width: 320px;
+            width: calc(100vw - 48px);
+
+            background: rgba(15, 15, 15, 0.97);
+            border-radius: 14px;
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(255, 40, 40, 0.12);
+
+            transform: translateY(20px);
+
+            transition:
+                opacity 0.35s ease,
+                transform 0.35s ease,
+                visibility 0.35s ease;
+        }
+
+        #worldOverlay.open {
+            transform: translateY(0);
         }
 
         .overlay-content {
@@ -594,9 +667,10 @@
                 WHY 86?
             </a>
 
-            <a href="#" id="worldLink" class="why">
-                THE WORLD &rarr;
-            </a>
+            <button id="worldLink" class="world-pulse" aria-label="View world activity">
+                <span class="world-pulse-dot"></span>
+                <span id="worldPulseCount">0</span>
+            </button>
 
         </footer>
 
@@ -737,6 +811,7 @@
         const closeBtn = document.getElementById("close");
 
         const worldLink = document.getElementById("worldLink");
+        const worldPulseCount = document.getElementById("worldPulseCount");
         const worldOverlay = document.getElementById("worldOverlay");
         const worldBody = document.getElementById("worldBody");
         const worldTotal = document.getElementById("worldTotal");
@@ -1295,6 +1370,29 @@
            shows a plain in-panel message instead of
            disturbing the rest of the page.
         ========================================== */
+
+        /* ==========================================
+           WORLD PULSE COUNT
+
+           One-off fetch on page load so the footer dot
+           shows the real total instead of "0" before the
+           panel has ever been opened.
+        ========================================== */
+
+        async function loadWorldPulseCount() {
+            try {
+                const res = await fetch(`${API_BASE}/api/stats`);
+                if (!res.ok) {
+                    throw new Error("Server returned " + res.status);
+                }
+                const data = await res.json();
+                worldPulseCount.textContent = formatNumber(data.total);
+            } catch (e) {
+                // Leave it at "0" — not worth disturbing the page for this.
+            }
+        }
+
+        loadWorldPulseCount();
 
         async function loadWorldPanel() {
 
