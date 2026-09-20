@@ -695,6 +695,27 @@
 
 
         /* ==========================================
+           COUNTRY HELPERS
+        ========================================== */
+
+        function flagEmoji(countryCode) {
+            if (!countryCode || countryCode.length !== 2) return "";
+            return countryCode.toUpperCase().replace(/./g, (char) =>
+                String.fromCodePoint(127397 + char.charCodeAt(0))
+            );
+        }
+
+        function countryName(countryCode) {
+            try {
+                return new Intl.DisplayNames(["en"], { type: "region" }).of(
+                    countryCode.toUpperCase()
+                );
+            } catch (e) {
+                return countryCode;
+            }
+        }
+
+        /* ==========================================
            SHOW MESSAGE
         ========================================== */
 
@@ -1166,7 +1187,14 @@
                     savePressState(pressState);
 
                     lockButtonForToday();
-                    handleMilestone(pressState.totalDays);
+
+                    const flag = flagEmoji(result.data.yourCountry);
+                    const name = countryName(result.data.yourCountry);
+                    showMessage(`YOUR PRESS: ${flag} ${name.toUpperCase()}`);
+
+                    setTimeout(() => {
+                        handleMilestone(pressState.totalDays);
+                    }, 2500);
 
                 });
 
