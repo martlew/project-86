@@ -44,11 +44,16 @@ app.use(express.json());
 
 function getDb() {
     if (!fs.existsSync(DB_FILE)) {
-        const initialData = { total: 0, countries: {}, tokens: {} };
+        const initialData = { total: 0, countries: {}, tokens: {}, recent: [] };
         fs.writeFileSync(DB_FILE, JSON.stringify(initialData));
     }
     try {
-        return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+        const db = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+        // Back-compat: older clicks.json files predate the "recent" field.
+        if (!Array.isArray(db.recent)) {
+            db.recent = [];
+        }
+        return db;
     } catch (e) {
         // Corrupted file — do not wipe silently, fail loudly instead.
         throw new Error('Database file is corrupted: ' + e.message);
@@ -230,6 +235,12 @@ app.post('/api/press', async (req, res) => {
             db.countries[country] = (db.countries[country] || 0) + 1;
             db.tokens[tokenHash] = today;
 
+            db.recent.push({ code: country, time: Date.now() });
+            // Keep only the last 30 presses — this is a live feed, not a full log.
+            if (db.recent.length > 30) {
+                db.recent.splice(0, db.recent.length - 30);
+            }
+
             saveDb(db);
 
             return { alreadyPressed: false, db, country };
@@ -251,6 +262,23 @@ app.post('/api/press', async (req, res) => {
 
     } catch (e) {
         res.status(500).json({ error: 'Could not register press.' });
+    }
+});
+
+/* ==========================================
+   GET /api/recent
+
+   Returns the most recent presses (newest first),
+   used by the frontend's "Ghost Sightings" feature.
+========================================== */
+
+app.get('/api/recent', (req, res) => {
+    try {
+        const db = getDb();
+        const recent = [...db.recent].reverse();
+        res.json({ recent });
+    } catch (e) {
+        res.status(500).json({ error: 'Could not read recent presses.' });
     }
 });
 
