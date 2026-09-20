@@ -608,9 +608,15 @@
 
         @media (max-width: 600px) {
 
+            body {
+                overflow-y: auto;
+            }
+
             .page {
                 padding-top: 28px;
                 padding-bottom: 24px;
+                min-height: 100vh;
+                height: auto;
             }
 
             .button-wrap {
