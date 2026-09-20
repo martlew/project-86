@@ -977,8 +977,6 @@
                 const status = await statusRes.json();
 
                 worldClicks = typeof status.total === "number" ? status.total : 0;
-                total.textContent = formatNumber(worldClicks);
-                today.textContent = formatNumber(worldClicks);
 
                 if (status.pressedToday) {
                     lockButtonForToday();
