@@ -133,6 +133,31 @@ app.get('/api/stats', (req, res) => {
 });
 
 /* ==========================================
+   GET /api/world
+========================================== */
+
+app.get('/api/world', (req, res) => {
+    try {
+        const db = getDb();
+        const countries = db.countries || {};
+        const countryCount = Object.keys(countries).length;
+
+        const topCountries = Object.entries(countries)
+            .map(([code, count]) => ({ code, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 5);
+
+        res.json({
+            total: db.total,
+            topCountries,
+            countryCount
+        });
+    } catch (e) {
+        res.status(500).json({ error: 'Could not read world stats.' });
+    }
+});
+
+/* ==========================================
    GET /api/status?token=...
 
    Lets the frontend know, on page load, whether
