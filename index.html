@@ -1363,7 +1363,7 @@
                         if (result.data && typeof result.data.total === "number") {
                             worldClicks = result.data.total;
                             total.textContent = formatNumber(worldClicks);
-                            today.textContent = formatNumber(worldClicks);
+                            today.textContent = formatNumber(result.data.today);
                         }
                         showMessage("YOU USED TODAY'S PRESS.", true);
                         return;
@@ -1378,7 +1378,7 @@
 
                     worldClicks = result.data.total;
                     total.textContent = formatNumber(worldClicks);
-                    today.textContent = formatNumber(worldClicks);
+                    today.textContent = formatNumber(result.data.today);
 
                     pressState.totalDays = (pressState.totalDays || 0) + 1;
                     pressState.lastDay = todayKey();
@@ -1444,7 +1444,7 @@
                 const formattedTotal = formatNumber(worldClicks);
                 worldPulseCount.textContent = formattedTotal;
                 total.textContent = formattedTotal;
-                today.textContent = formattedTotal;
+                today.textContent = formatNumber(typeof data.today === "number" ? data.today : 0);
             } catch (e) {
                 // Leave it at "0" — not worth disturbing the page for this.
             }
