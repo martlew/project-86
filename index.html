@@ -306,6 +306,19 @@
             transform: translateY(0);
         }
 
+        .message.press-result {
+            font-family: "Courier New", Consolas, monospace;
+            white-space: pre-line;
+            line-height: 1.8;
+        }
+
+        .message.press-result .press-sub {
+            color: #aaaaaa;
+            font-size: 0.55em;
+            font-weight: 400;
+            text-shadow: none;
+        }
+
         .message.dim {
             color: #aaaaaa;
             font-size: clamp(11px, 2vw, 13px);
@@ -938,11 +951,19 @@
            SHOW MESSAGE
         ========================================== */
 
+        function localCountryCode() {
+            try {
+                return new Intl.Locale(navigator.language).region || "";
+            } catch (e) {
+                return "";
+            }
+        }
+
         function showMessage(text, dim) {
 
             message.textContent = text;
 
-            message.classList.remove("visible");
+            message.classList.remove("visible", "press-result");
             message.classList.toggle("dim", !!dim);
 
             // Force animation restart
@@ -1326,8 +1347,6 @@
 
             } else if (totalDays > 86 && totalDays % 50 === 0) {
                 showMessage("THE NUMBER CONTINUES.");
-            } else {
-                showMessage("YOU USED TODAY'S PRESS.", true);
             }
         }
 
@@ -1405,8 +1424,18 @@
 
                     lockButtonForToday();
 
-                    const name = countryName(result.data.yourCountry);
-                    showMessage(`YOUR PRESS: ${name.toUpperCase()}`);
+                    const rank = formatNumber(result.data.today);
+                    const country = result.data.country || result.data.yourCountry || localCountryCode();
+                    const rankLine = country
+                        ? `PRESS #${rank} TODAY · ${countryName(country).toUpperCase()}`
+                        : `PRESS #${rank} TODAY`;
+
+                    showMessage(rankLine);
+                    const sub = document.createElement("div");
+                    sub.className = "press-sub";
+                    sub.textContent = "YOU INTERRUPTED REALITY. COME BACK TOMORROW.";
+                    message.appendChild(sub);
+                    message.classList.add("press-result");
 
                     setTimeout(() => {
                         handleMilestone(pressState.totalDays);
