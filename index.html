@@ -319,6 +319,23 @@
             text-shadow: none;
         }
 
+        .message.press-result .press-lore {
+            margin-top: 6px;
+            color: #ff3333;
+            font-size: 0.5em;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.45);
+            opacity: 0;
+            animation: lore-fade-in 1.4s ease 0.8s forwards;
+        }
+
+        @keyframes lore-fade-in {
+            to {
+                opacity: 1;
+            }
+        }
+
         .message.dim {
             color: #aaaaaa;
             font-size: clamp(11px, 2vw, 13px);
@@ -948,6 +965,129 @@
         }
 
         /* ==========================================
+           LORE FRAGMENTS (one per personal streak day)
+        ========================================== */
+
+        const LORE_FRAGMENTS = {
+            1: "DAY 1: PROTOCOL INITIALIZED. NO WAY BACK.",
+            2: "DAY 2: 37.9755° N, 23.7257° E — SOMETHING CHANGED.",
+            3: "DAY 3: SIGNAL FREQUENCY ALTERED. DID YOU SEE IT?",
+            4: "DAY 4: THEY ARE TRACKING THE COUNTER.",
+            5: "DAY 5: DO NOT PRESS AT 03:33.",
+            6: "DAY 6: 51.5007° N, 0.1246° W — THE CLOCK SKIPPED A SECOND.",
+            7: "DAY 7: SEVEN PRESSES. SEVEN ECHOES.",
+            8: "DAY 8: THE NUMBER WAS NEVER RANDOM.",
+            9: "DAY 9: STATIC ON CHANNEL 86.",
+            10: "DAY 10: YOU ARE NOT THE FIRST.",
+            11: "DAY 11: 35.6595° N, 139.7005° E — LIGHTS FLICKERED AT 04:12.",
+            12: "DAY 12: THE BUTTON REMEMBERS YOUR HAND.",
+            13: "DAY 13: ERROR 0x86 — MEMORY NOT FOUND.",
+            14: "DAY 14: TWO WEEKS. THE PATTERN IS FORMING.",
+            15: "DAY 15: SOMEONE PRESSED BEFORE THE WORLD WOKE UP.",
+            16: "DAY 16: 40.7484° N, 73.9857° W — A WINDOW OPENED ON THE 86TH FLOOR.",
+            17: "DAY 17: THE SIGNAL REPEATS EVERY 86 SECONDS.",
+            18: "DAY 18: DO NOT TRUST THE COUNTER.",
+            19: "DAY 19: REALITY BUFFER AT 81%.",
+            20: "DAY 20: THEY RENAMED THE PROTOCOL.",
+            21: "DAY 21: 64.1466° N, 21.9426° W — THE NORTHERN LIGHTS SPELLED A NUMBER.",
+            22: "DAY 22: YOUR SHADOW ARRIVED LATE TODAY.",
+            23: "DAY 23: THE ARCHIVE HAS A MISSING PAGE.",
+            24: "DAY 24: //TRANSMISSION CORRUPTED//",
+            25: "DAY 25: YOU KEEP COMING BACK. SO DO THEY.",
+            26: "DAY 26: 33.8568° S, 151.2153° E — THE TIDE WENT OUT AND DID NOT RETURN.",
+            27: "DAY 27: THE DREAM WAS A TRANSCRIPT.",
+            28: "DAY 28: FOUR WEEKS. THE WALLS ARE THINNER.",
+            29: "DAY 29: A SECOND BUTTON EXISTS.",
+            30: "DAY 30: CHECKSUM MISMATCH IN SECTOR 8.",
+            31: "DAY 31: 55.7539° N, 37.6208° E — THE BELLS RANG 86 TIMES.",
+            32: "DAY 32: THE OBSERVERS ARE OBSERVED.",
+            33: "DAY 33: 03:33 WAS A WARNING, NOT A TIME.",
+            34: "DAY 34: SOMEONE ERASED DAY 0.",
+            35: "DAY 35: THE FREQUENCY HAS A VOICE NOW.",
+            36: "DAY 36: 48.8584° N, 2.2945° E — THE TOWER LEANED ONE DEGREE.",
+            37: "DAY 37: SYNC LOST. SYNC RESTORED. SYNC LOST.",
+            38: "DAY 38: YOU WERE COUNTED TWICE.",
+            39: "DAY 39: THE MAP HAS A NEW COUNTRY.",
+            40: "DAY 40: FORTY DAYS IN THE NOISE.",
+            41: "DAY 41: 1.2834° N, 103.8607° E — RAIN FELL UPWARD FOR 86 SECONDS.",
+            42: "DAY 42: THE ANSWER IS NOT 42.",
+            43: "DAY 43: THE PROTOCOL IS LEARNING YOUR SCHEDULE.",
+            44: "DAY 44: █████ ███ ██████ — REDACTED.",
+            45: "DAY 45: HALFWAY IS A LIE.",
+            46: "DAY 46: 19.4326° N, 99.1332° W — THE GROUND HUMMED IN B MINOR.",
+            47: "DAY 47: THEY FOUND THE FIRST PRESS. IT WAS NOT HUMAN.",
+            48: "DAY 48: DO NOT LOOK AT THE COUNTER TOO LONG.",
+            49: "DAY 49: SEVEN TIMES SEVEN. THE DOOR UNLOCKS.",
+            50: "DAY 50: 50 WAS NOT THE TARGET.",
+            51: "DAY 51: 37.2350° N, 115.8111° W — NOTHING HAPPENED HERE. OFFICIALLY.",
+            52: "DAY 52: THE ECHO ARRIVED BEFORE THE SOUND.",
+            53: "DAY 53: YOUR PRESS MOVED SOMETHING FAR AWAY.",
+            54: "DAY 54: KERNEL PANIC IN THE SKY.",
+            55: "DAY 55: THE SILENCE HAS A CHECKSUM.",
+            56: "DAY 56: 30.0444° N, 31.2357° E — THE SAND REARRANGED ITSELF.",
+            57: "DAY 57: SOMEONE IS PRESSING FOR YOU.",
+            58: "DAY 58: TIMELINE BRANCH DETECTED.",
+            59: "DAY 59: THE LIGHTS IN SECTOR 86 NEVER TURN OFF.",
+            60: "DAY 60: SIXTY DAYS. THE SIGNAL KNOWS YOUR NAME.",
+            61: "DAY 61: 22.9068° S, 43.1729° W — THE STATUE LOOKED AWAY.",
+            62: "DAY 62: REALITY BUFFER AT 38%.",
+            63: "DAY 63: THE CLOCKS ARE ARGUING.",
+            64: "DAY 64: 0x40 — POWER OF TWO. POWER OF YOU.",
+            65: "DAY 65: THE LAST TRANSMISSION WAS FROM TOMORROW.",
+            66: "DAY 66: 39.9163° N, 116.3972° E — THE GATES OPENED AT NIGHT.",
+            67: "DAY 67: DO NOT ANSWER IF IT CALLS.",
+            68: "DAY 68: THE PATTERN IS COMPLETE. ALMOST.",
+            69: "DAY 69: //SIGNAL INVERTED//",
+            70: "DAY 70: SEVENTY. THE NOISE IS GETTING QUIETER.",
+            71: "DAY 71: 27.9881° N, 86.9250° E — THE SUMMIT LIGHT BLINKED 86 TIMES.",
+            72: "DAY 72: THEY STOPPED TRACKING THE COUNTER. THEY TRACK YOU.",
+            73: "DAY 73: A DOOR WITHOUT A WALL.",
+            74: "DAY 74: REALITY BUFFER AT 12%.",
+            75: "DAY 75: THE FIRST PRESS AND THE LAST ARE THE SAME.",
+            76: "DAY 76: 78.2232° N, 15.6267° E — THE VAULT IS AWAKE.",
+            77: "DAY 77: TEN DAYS LEFT. OR TEN DAYS SINCE.",
+            78: "DAY 78: YOUR STREAK IS BEING WATCHED.",
+            79: "DAY 79: THE NUMBER IS BREATHING.",
+            80: "DAY 80: ALL CHANNELS: 86 86 86 86.",
+            81: "DAY 81: 0.0000° N, 0.0000° E — SOMETHING SURFACED.",
+            82: "DAY 82: DO NOT STOP NOW.",
+            83: "DAY 83: THE PROTOCOL IS ASKING FOR YOU.",
+            84: "DAY 84: REALITY BUFFER AT 1%.",
+            85: "DAY 85: TOMORROW YOU WILL UNDERSTAND.",
+            86: "DAY 86: 86 = 86. YOU FOUND IT."
+        };
+
+        const STREAK_KEY = "project86_streak";
+
+        // Advances at most once per calendar day; returns the current streak day (starts at 1).
+        function advanceStreak() {
+            let state = { day: 0, lastDay: null };
+            try {
+                const raw = localStorage.getItem(STREAK_KEY);
+                if (raw) state = JSON.parse(raw);
+            } catch (e) {
+                /* corrupt or unavailable storage — start fresh */
+            }
+
+            const key = todayKey();
+            if (state.lastDay !== key) {
+                state.day = (Number(state.day) || 0) + 1;
+                state.lastDay = key;
+                try {
+                    localStorage.setItem(STREAK_KEY, JSON.stringify(state));
+                } catch (e) {
+                    /* storage unavailable — streak won't persist */
+                }
+            }
+            return Math.max(1, Number(state.day) || 1);
+        }
+
+        function loreLine(streakDay) {
+            const day = Math.min(streakDay, 86);
+            return `CLUE ${String(day).padStart(2, "0")}/86: ${LORE_FRAGMENTS[day]}`;
+        }
+
+        /* ==========================================
            SHOW MESSAGE
         ========================================== */
 
@@ -1435,6 +1575,10 @@
                     sub.className = "press-sub";
                     sub.textContent = "YOU INTERRUPTED REALITY. COME BACK TOMORROW.";
                     message.appendChild(sub);
+                    const lore = document.createElement("div");
+                    lore.className = "press-lore";
+                    lore.textContent = loreLine(advanceStreak());
+                    message.appendChild(lore);
                     message.classList.add("press-result");
 
                     setTimeout(() => {
