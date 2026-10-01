@@ -321,10 +321,12 @@
 
         .ghost-sighting {
             position: fixed;
-            top: 24px;
-            transform: translateY(-10px);
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
 
             color: #999999;
+            font-family: "Courier New", Consolas, monospace;
             font-size: 11px;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -334,14 +336,28 @@
             pointer-events: none;
 
             opacity: 0;
-            transition:
-                opacity 0.6s ease,
-                transform 0.6s ease;
+            transition: opacity 0.5s ease;
         }
 
         .ghost-sighting.visible {
             opacity: 1;
-            transform: translateY(0);
+        }
+
+        .ghost-sighting .live-dot {
+            display: inline-block;
+            color: #ff2a2a;
+            animation: live-pulse 1.6s ease-in-out infinite;
+        }
+
+        @keyframes live-pulse {
+            0%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 4px rgba(255, 42, 42, 0.6);
+            }
+            50% {
+                opacity: 0.55;
+                text-shadow: 0 0 10px rgba(255, 42, 42, 0.9);
+            }
         }
 
         /* =========================
@@ -659,7 +675,6 @@
             }
 
             .ghost-sighting {
-                top: 6px;
                 font-size: 9px;
             }
         }
@@ -673,7 +688,7 @@
 
     <div class="page" id="page">
 
-        <div id="ghostSighting" class="ghost-sighting"></div>
+        <div id="ghostSighting" class="ghost-sighting"><span class="live-dot">●</span> LIVE | SIGNAL FROM <span id="ghostCountry"></span></div>
 
         <!-- =========================
          HEADER
@@ -908,13 +923,6 @@
         /* ==========================================
            COUNTRY HELPERS
         ========================================== */
-
-        function flagEmoji(countryCode) {
-            if (!countryCode || countryCode.length !== 2) return "";
-            return countryCode.toUpperCase().replace(/./g, (char) =>
-                String.fromCodePoint(127397 + char.charCodeAt(0))
-            );
-        }
 
         function countryName(countryCode) {
             try {
@@ -1397,9 +1405,8 @@
 
                     lockButtonForToday();
 
-                    const flag = flagEmoji(result.data.yourCountry);
                     const name = countryName(result.data.yourCountry);
-                    showMessage(`YOUR PRESS: ${flag} ${name.toUpperCase()}`);
+                    showMessage(`YOUR PRESS: ${name.toUpperCase()}`);
 
                     setTimeout(() => {
                         handleMilestone(pressState.totalDays);
@@ -1474,6 +1481,7 @@
         ========================================== */
 
         const ghostSighting = document.getElementById("ghostSighting");
+        const ghostCountry = document.getElementById("ghostCountry");
 
         async function showGhostSighting() {
             try {
@@ -1490,12 +1498,7 @@
                 const pool = recent.slice(0, 10);
                 const entry = pool[Math.floor(Math.random() * pool.length)];
 
-                const flag = flagEmoji(entry.code);
-                const name = countryName(entry.code);
-                ghostSighting.textContent = `${flag} ${name.toUpperCase()} JUST PRESSED`;
-                const onLeft = Math.random() < 0.5;
-                ghostSighting.style.left = onLeft ? "24px" : "";
-                ghostSighting.style.right = onLeft ? "" : "24px";
+                ghostCountry.textContent = countryName(entry.code).toUpperCase();
                 ghostSighting.classList.add("visible");
 
                 setTimeout(() => {
@@ -1523,11 +1526,10 @@
 
                 worldCountries.innerHTML = "";
                 (data.topCountries || []).forEach((entry) => {
-                    const flag = flagEmoji(entry.code);
                     const name = countryName(entry.code);
                     const row = document.createElement("div");
                     row.className = "world-country-row";
-                    row.textContent = `${flag} ${name.toUpperCase()} — ${entry.count}`;
+                    row.textContent = `${name.toUpperCase()} — ${entry.count}`;
                     worldCountries.appendChild(row);
                 });
 
